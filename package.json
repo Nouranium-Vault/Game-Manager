@@ -1,0 +1,16 @@
+{
+    "name": "com.nouranium.gamemanager",
+    "displayName": "Nouranium Game Manager",
+    "version": "0.1.0",
+    "unity": "2020.3",
+    "description": "A simple game manager useful for hyper casual games.",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/nouranium-vault/game-manager/issues"
+    },
+    "homepage": "https://github.com/nouranium-vault/game-manager#readme",
+    "category": "Utility"
+	"dependencies": {
+		"com.danieleverland.scriptableobjectarchitecture" : "1.6.4"
+		}
+}
