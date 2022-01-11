@@ -11,6 +11,7 @@
     "homepage": "https://github.com/nouranium-vault/game-manager#readme",
     "category": "Utility",
 	"dependencies": {
-		"com.danieleverland.scriptableobjectarchitecture" : "1.6.4"
+		"com.danieleverland.scriptableobjectarchitecture" : "1.6.4",
+		"com.unity.nuget.newtonsoft-json": "1.1.2"
 		}
 }
