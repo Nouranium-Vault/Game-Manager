@@ -1,7 +1,7 @@
 {
     "name": "com.nouranium.gamemanager",
     "displayName": "Nouranium Game Manager",
-    "version": "0.1.6",
+    "version": "0.1.7",
     "unity": "2020.3",
     "description": "A simple game manager useful for hyper casual games.",
     "license": "MIT",
