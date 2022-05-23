@@ -1,4 +1,3 @@
-using ScriptableObjectArchitecture;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -11,7 +10,6 @@ namespace Nouranium
     public class GameManager : ScriptableObject
     {
         [SerializeField] private ProgressData progressData;
-        [SerializeField] private List<SceneReference> levels;
 
         [Header("Events (Optional)")]
         [SerializeField] private UnityEvent onGameLaunched;
@@ -27,10 +25,24 @@ namespace Nouranium
         private readonly string startSessionTime = "startSessionTime";
         private readonly string endSessionTime = "endSessionTime";
 
+        private List<Scene> _levels;
+
         public int level => progressData.GetIntParameter("currentLevel") + 1;
 
         public void StartSession()
         {
+            _levels = new List<Scene>();
+
+            for (int i = 0; i < SceneManager.sceneCountInBuildSettings; i++)
+            {
+                var scene = SceneManager.GetSceneByBuildIndex(i);
+                string sceneName = scene.name.ToLower();
+                if (sceneName.StartsWith("level"))
+                {
+                    _levels.Add(scene);
+                }
+            }
+
             progressData.LoadProgression();
             int sessionNum = progressData.GetIntParameter(sessionNo);
 
@@ -61,9 +73,6 @@ namespace Nouranium
         {
             int levelNo = progressData.GetIntParameter(currentLevel);
 
-            //int levelInRange = levelNo % levels.Count;
-            //progressData.SetWinState(levels[levelInRange].Value.SceneIndex, true);
-
             progressData.IncreaseIntParameter(currentLevel, 1);
 
             onWinLevel.Invoke(levelNo);
@@ -76,18 +85,12 @@ namespace Nouranium
             onLoseLevel.Invoke(levelNo);
         }
 
-        private string GetLevelName(SceneReference sceneReference)
-        {
-            string[] path = sceneReference.Value.SceneName.Split('/');
-            return path[path.Length - 1].Split('.')[0].Replace(' ', '_');
-        }
-
         public void LoadLevel()
         {
             int levelNo = progressData.GetIntParameter(currentLevel);
-            int levelInRange = levelNo % levels.Count;
+            int levelInRange = levelNo % _levels.Count;
 
-            SceneManager.LoadSceneAsync(levels[levelInRange].Value.SceneIndex).completed += (op) => onLoadedLevel.Invoke(levelNo + 1);
+            SceneManager.LoadSceneAsync(_levels[levelInRange].buildIndex).completed += (op) => onLoadedLevel.Invoke(levelNo + 1);
         }
     }
 }
