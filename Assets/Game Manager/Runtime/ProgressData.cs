@@ -40,6 +40,10 @@ namespace Nouranium
 
         public int GetIntParameter(string parameter)
         {
+#if UNITY_EDITOR
+            if (_saveData.intParameters == null)
+                LoadProgression();
+#endif
             if (!_saveData.intParameters.ContainsKey(parameter))
                 _saveData.intParameters.Add(parameter, 0);
 
@@ -48,6 +52,10 @@ namespace Nouranium
 
         public void SetIntParameter(string parameter, int amount)
         {
+#if UNITY_EDITOR
+            if (_saveData.intParameters == null)
+                LoadProgression();
+#endif
             if (_saveData.intParameters.ContainsKey(parameter))
                 _saveData.intParameters[parameter] = amount;
             else
@@ -58,6 +66,10 @@ namespace Nouranium
 
         public void IncreaseIntParameter(string parameter, int amount)
         {
+#if UNITY_EDITOR
+            if (_saveData.intParameters == null)
+                LoadProgression();
+#endif
             if (_saveData.intParameters.ContainsKey(parameter))
                 _saveData.intParameters[parameter] += amount;
             else
@@ -68,6 +80,10 @@ namespace Nouranium
 
         public DateTime GetDateTimeParameter(string parameter)
         {
+#if UNITY_EDITOR
+            if (_saveData.dateTimeParameters == null)
+                LoadProgression();
+#endif
             if (!_saveData.dateTimeParameters.ContainsKey(parameter))
                 _saveData.dateTimeParameters.Add(parameter, 0);
 
@@ -76,6 +92,10 @@ namespace Nouranium
 
         public void SetDateTimeParameter(string parameter, DateTime amount)
         {
+#if UNITY_EDITOR
+            if (_saveData.dateTimeParameters == null)
+                LoadProgression();
+#endif
             if (_saveData.dateTimeParameters.ContainsKey(parameter))
                 _saveData.dateTimeParameters[parameter] = amount.ToFileTimeUtc();
             else
@@ -86,6 +106,10 @@ namespace Nouranium
 
         public void SetWinState(int sceneIndex, bool hasWon)
         {
+#if UNITY_EDITOR
+            if (_saveData.hasWonLevel == null)
+                LoadProgression();
+#endif
             _saveData.hasWonLevel[sceneIndex] = hasWon;
 
             SaveProgression();

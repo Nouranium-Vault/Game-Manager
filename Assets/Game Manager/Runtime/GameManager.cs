@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
@@ -25,23 +24,15 @@ namespace Nouranium
         private readonly string startSessionTime = "startSessionTime";
         private readonly string endSessionTime = "endSessionTime";
 
-        private List<Scene> _levels;
+        private int _firstSceneBuildIndex = 0;
+        private int _sceneCount = 0;
 
         public int level => progressData.GetIntParameter("currentLevel") + 1;
 
         public void StartSession()
         {
-            _levels = new List<Scene>();
-
-            for (int i = 0; i < SceneManager.sceneCountInBuildSettings; i++)
-            {
-                var scene = SceneManager.GetSceneByBuildIndex(i);
-                string sceneName = scene.name.ToLower();
-                if (sceneName.StartsWith("level"))
-                {
-                    _levels.Add(scene);
-                }
-            }
+            _firstSceneBuildIndex = SceneManager.GetActiveScene().buildIndex + 1;
+            _sceneCount = SceneManager.sceneCountInBuildSettings - _firstSceneBuildIndex;
 
             progressData.LoadProgression();
             int sessionNum = progressData.GetIntParameter(sessionNo);
@@ -61,6 +52,10 @@ namespace Nouranium
 
         public void EndSession()
         {
+#if UNITY_EDITOR
+            if (progressData == null)
+                progressData.LoadProgression();
+#endif
             int sessionNum = progressData.GetIntParameter(sessionNo);
             float sessionLength = (float)(DateTime.Now.ToUniversalTime() - progressData.GetDateTimeParameter(startSessionTime)).TotalMinutes;
 
@@ -88,9 +83,9 @@ namespace Nouranium
         public void LoadLevel()
         {
             int levelNo = progressData.GetIntParameter(currentLevel);
-            int levelInRange = levelNo % _levels.Count;
+            int levelNoInRange = _firstSceneBuildIndex + (levelNo % _sceneCount);
 
-            SceneManager.LoadSceneAsync(_levels[levelInRange].buildIndex).completed += (op) => onLoadedLevel.Invoke(levelNo + 1);
+            SceneManager.LoadSceneAsync(levelNoInRange).completed += (op) => onLoadedLevel.Invoke(levelNo + 1);
         }
     }
 }
